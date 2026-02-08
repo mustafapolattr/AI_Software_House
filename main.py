@@ -18,6 +18,7 @@ from agents.backend_agent import backend_agent
 from core.utils.logger import get_logger
 from core.config import Config
 from core.llm.factory import LLMFactory
+from agents.qa_agent import qa_agent
 
 load_dotenv()
 logger = get_logger(__name__)
@@ -93,10 +94,27 @@ def run_software_house():
         context=[task_pm, task_tech_lead]
     )
 
+    task_qa = Task(
+        description=f"""
+            Create a functional test file named 'tests/test_app.py' inside the project folder.
+
+            Requirements:
+            1. Use 'pytest' and 'requests'.
+            2. Test the '/tasks' POST endpoint (create a task).
+            3. Test the '/tasks' GET endpoint (list tasks).
+            4. Ensure the output file is saved strictly at: {target_path}/tests/test_app.py
+
+            Review the Backend Developer's code provided in the context to write accurate tests.
+            """,
+        expected_output="A complete test_app.py file.",
+        agent=qa_agent,
+        context=[task_backend]
+    )
+
     # --- EKİBİ KUR ---
     crew = Crew(
-        agents=[product_manager, architect_agent, tech_lead_agent, backend_agent],
-        tasks=[task_pm, task_architect, task_tech_lead, task_backend],
+        agents=[product_manager, architect_agent, tech_lead_agent, backend_agent, qa_agent],
+        tasks=[task_pm, task_architect, task_tech_lead, task_backend, task_qa],
         process=Process.sequential,
         verbose=True,
         memory=False
