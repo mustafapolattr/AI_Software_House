@@ -13,7 +13,7 @@ class Config:
     """
 
     # 1. Get the active provider (defaults to gemini if not set)
-    DEFAULT_LLM_PROVIDER = os.getenv("DEFAULT_LLM_PROVIDER", "gemini").lower()
+    DEFAULT_LLM_PROVIDER = os.getenv("DEFAULT_LLM_PROVIDER").lower()
 
     # 2. Map Providers to their specific API Key Environment Variable NAMES
     # This allows us to check dynamically based on selection.
